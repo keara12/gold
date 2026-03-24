@@ -93,8 +93,9 @@
 
         <div class="mt-8 pt-4 border-t border-white/5 flex justify-between text-[10px] text-gray-500">
             <div class="flex flex-col">
-                <span>1 Oz = 31.1035g</span>
-                <span>1 Tael = 37.5g</span>
+                <span>1 អោន = 31.1035g</span>
+                <span>1 តម្លឹង = 37.5g</span>
+                <span>1 តម្លឹង ≈ 1.205 អោន</span>
             </div>
             <div class="text-right">
                 <span id="lastUpdate">Update: រង់ចាំទិន្នន័យ...</span>
@@ -104,7 +105,7 @@
 
     <script>
         const API_KEY = "goldapi-1qbw919mn41xylv-io"; 
-        const RIEL_RATE = 4000; // អត្រាប្តូរប្រាក់ (អាចកែប្រែបាន)
+        const RIEL_RATE = 4000; 
 
         async function getLivePrice() {
             const btnText = document.getElementById('btnText');
@@ -128,7 +129,10 @@
                 updateDisplay(currentPrice);
 
                 const now = new Date();
-                document.getElementById('lastUpdate').innerText = "Update: " + now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0');
+                const dateStr = now.toLocaleDateString('km-KH', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const timeStr = now.toLocaleTimeString('km-KH', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+                document.getElementById('lastUpdate').innerText = "Update: " + dateStr + " " + timeStr;
                 
                 btnText.innerText = "ទាញរួចរាល់";
                 setTimeout(() => btnText.innerText = "ទាញតម្លៃផ្ទាល់", 2000);
@@ -152,21 +156,17 @@
         }
 
         function updateDisplay(price) {
-            // គណនាជា ដុល្លារ/តម្លឹង
             const resultUSD = (price / 31.1035) * 37.5;
-            
-            // គណនាជា រៀល/តម្លឹង
             const resultRiel = resultUSD * RIEL_RATE;
 
-            // បង្ហាញតម្លៃដុល្លារ
             document.getElementById('taelPrice').innerText = resultUSD.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
 
-            // បង្ហាញតម្លៃរៀល (មូលត្រឹមខ្ទង់រយ)
-            document.getElementById('taelPriceRiel').innerText = Math.round(resultRiel / 100) * 100;
-            document.getElementById('taelPriceRiel').innerText = (Math.round(resultRiel / 100) * 100).toLocaleString();
+            // បង្ហាញតម្លៃរៀលដោយបង្គត់ខ្ទង់រយ និងដាក់សញ្ញាក្បៀស
+            const formattedRiel = (Math.round(resultRiel / 100) * 100).toLocaleString();
+            document.getElementById('taelPriceRiel').innerText = formattedRiel;
         }
     </script>
 </body>
